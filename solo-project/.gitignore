@@ -1,3 +1,11 @@
+# Ignore node_modules and build
+node_modules/
+dist/
+
+# Ignore environment variables
+.env
+server/.env
+
 # Logs
 logs
 *.log
