@@ -34,6 +34,14 @@ body {
   min-height: 100vh;
 }
 
+/* index.css */
+body {
+  background-image: url("https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZG5tdm96em1hMmExeWxrbzZ4MXEzMXd3eGp6a3RtNHppdzhxdWxubiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oriNXXkGflA1T9WmY/giphy.gif");
+  background-size: cover;      /* scale to fill */
+  background-position: center; /* center the image */
+  background-repeat: no-repeat;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
