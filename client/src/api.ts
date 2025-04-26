@@ -1,6 +1,7 @@
 // src/api.ts
+
 export const createTrip = async (trip: { destination: string; date: string }) => {
-    const res = await fetch("http://localhost:5000/api/trips", {  // ← note port 5000
+    const res = await fetch("http://localhost:5000/api/trips", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(trip),
@@ -8,7 +9,7 @@ export const createTrip = async (trip: { destination: string; date: string }) =>
     if (!res.ok) throw new Error("Failed to create trip");
     return res.json();
   };
-
+  
   export const fetchDateSpots = async (lat: number, lng: number) => {
     const res = await fetch(
       `http://localhost:5000/api/date-spots?lat=${lat}&lng=${lng}`
@@ -18,9 +19,8 @@ export const createTrip = async (trip: { destination: string; date: string }) =>
       { name: string; address: string; url?: string }[]
     >;
   };
-
-
-export const deleteTrip = async (id: string) => {
+  
+  export const deleteTrip = async (id: string) => {
     const res = await fetch(`http://localhost:5000/api/trips/${id}`, {
       method: "DELETE",
     });

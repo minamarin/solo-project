@@ -1,3 +1,4 @@
+// client/src/components/TripList.tsx
 import React, { useEffect, useState } from "react";
 import DateSpots from "./DateSpots";
 import { deleteTrip } from "../api";
@@ -15,21 +16,23 @@ const TripList: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchTrips();
+    (async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/trips");
+        const data: Trip[] = await res.json();
+        setTrips(data);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
   }, []);
-
-  const fetchTrips = async () => {
-    const res = await fetch("http://localhost:5000/api/trips");
-    const data: Trip[] = await res.json();
-    setTrips(data);
-  };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this trip?")) return;
     setLoading(true);
     try {
       await deleteTrip(id);
-      await fetchTrips(); // refresh list
+      setTrips((prev) => prev.filter((t) => t._id !== id));
     } catch (err) {
       console.error(err);
     } finally {
@@ -40,35 +43,42 @@ const TripList: React.FC = () => {
   if (loading) return <p>Updating trips…</p>;
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">Your Trips</h2>
-      <ul>
-        {trips.map((trip) => (
-          <li
-            key={trip._id}
-            className="mb-6 p-4 border border-gray-200 rounded flex flex-col space-y-2"
-          >
-            <div>
-              <h3 className="text-lg font-medium">{trip.destination}</h3>
-              <p>Date: {new Date(trip.date).toLocaleDateString()}</p>
+    <div className="mt-6 max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-lg">
+      <h2 className="text-2xl font-semibold mb-4">Your Trips</h2>
+      {trips.length === 0 ? (
+        <p className="text-gray-500">No trips yet.</p>
+      ) : (
+        <ul className="space-y-6">
+          {trips.map((trip) => (
+            <li
+              key={trip._id}
+              className="p-4 bg-gray-50 rounded-lg shadow-inner"
+            >
+              <h3 className="text-lg font-medium">
+                {trip.destination}
+              </h3>
+              <p>
+                Date: {new Date(trip.date).toLocaleDateString()}
+              </p>
               <p>
                 Weather: {trip.weather.summary} – {trip.weather.temp}°C
               </p>
-            </div>
-
-            {/* Delete button */}
-            <button
-              onClick={() => handleDelete(trip._id)}
-              className="self-start bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-            >
-              Delete Trip
-            </button>
-
-            {/* Date spot recommendations */}
-            <DateSpots lat={trip.coords.lat} lng={trip.coords.lng} />
-          </li>
-        ))}
-      </ul>
+              <div className="mt-3 flex items-center space-x-3">
+                <button
+                  onClick={() => handleDelete(trip._id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                >
+                  Delete Trip
+                </button>
+                <DateSpots
+                  lat={trip.coords.lat}
+                  lng={trip.coords.lng}
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

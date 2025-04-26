@@ -1,26 +1,32 @@
-/**
- * Fetches top 5 romantic date‑spots near given coords.
- */
+import fetch from "node-fetch";
+
+export interface Spot {
+  name: string;
+  address: string;
+  url?: string;
+}
+
 export const getDateSpots = async (
-    lat: number,
-    lng: number
-  ): Promise<{ name: string; address: string; url?: string }[]> => {
-    const API_KEY = process.env.FOURSQUARE_API_KEY!;
-    const url = new URL("https://api.foursquare.com/v3/places/search");
-    url.searchParams.set("ll", `${lat},${lng}`);
-    url.searchParams.set("query", "romantic");
-    url.searchParams.set("limit", "5");
-  
-    const res = await fetch(url.toString(), {
-      headers: { Authorization: API_KEY },
-    });
-    if (!res.ok) throw new Error("Failed to fetch date spots");
-    const data = await res.json();
-    return data.results.map((place: any) => ({
-      name: place.name,
-      address: place.location.formatted_address,
-      url: place.geocodes?.main
-        ? `https://foursquare.com/v/${place.fsq_id}`
-        : undefined,
-    }));
-  };
+  lat: number,
+  lng: number
+): Promise<Spot[]> => {
+  const API_KEY = process.env.FOURSQUARE_API_KEY!;
+  const searchUrl = new URL("https://api.foursquare.com/v3/places/search");
+  searchUrl.searchParams.set("ll", `${lat},${lng}`);
+  searchUrl.searchParams.set("query", "romantic");
+  searchUrl.searchParams.set("limit", "10");
+
+  const searchRes = await fetch(searchUrl.toString(), {
+    headers: { Authorization: API_KEY },
+  });
+  if (!searchRes.ok) throw new Error("Failed to fetch date spots");
+
+  const { results } = await searchRes.json();
+  return results.map((place: any) => ({
+    name: place.name,
+    address: place.location.formatted_address,
+    url: place.geocodes?.main
+      ? `https://foursquare.com/v/${place.fsq_id}`
+      : undefined,
+  }));
+};

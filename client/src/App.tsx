@@ -1,28 +1,39 @@
-import React, { useState } from "react";
-import TripForm from "./components/TripForm";
-import TripList from "./components/TripList";
-import { createTrip } from "./api";  // Helper function to send data to backend
+// client/src/App.tsx
+import React, { useState } from 'react';
+import TripForm from './components/TripForm';
+import TripList from './components/TripList';
+import BackgroundMusic from './components/BackgroundMusic';
+import { createTrip } from './api';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const handleTripSubmit = async (trip: { destination: string; date: string }) => {
-    setLoading(true); // Set loading state
+    setLoading(true);
     try {
-      const newTrip = await createTrip(trip); // Send data to the backend
-      console.log("New Trip:", newTrip); // Log the response
-      setLoading(false); // Set loading to false after receiving the response
-    } catch (error) {
-      console.error("Error creating trip:", error);
+      await createTrip(trip);
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold text-center mb-6">Trip Planner</h1>
+    <div className="min-h-screen bg-gray-100 bg-opacity-80 p-6">
+      {/* HEADER */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-4xl font-rocker text-pink-700">
+          Trip Planner
+        </h1>
+        <BackgroundMusic />
+      </div>
+
+      {/* REST OF APP */}
       <TripForm onSubmit={handleTripSubmit} />
-      {loading ? <p>Loading...</p> : <TripList />}
+      {loading ? (
+        <p className="text-center mt-4">Loading…</p>
+      ) : (
+        <TripList />
+      )}
     </div>
   );
 };

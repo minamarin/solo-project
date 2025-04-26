@@ -47,7 +47,7 @@ const TripForm: React.FC<TripFormProps> = ({ onSubmit }) => {
       </div>
       <button
         type='submit'
-        className='w-full bg-blue-500 text-white p-2 rounded'
+        className="inline-block bg-blue-500 text-white px-4 py-1 rounded text-sm"
       >
         Submit Trip
       </button>
